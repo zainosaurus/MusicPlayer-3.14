@@ -2,18 +2,21 @@ Path to folder containing files (ex. /Music)
 Track title
 Artist
 Album
-file name
+file path
+cover art path (if this is default then alireza's picture will be used for cover art)
 
 Track title
 Artist
 Album
-file name
+file path
+cover art path
 ---       < denotes end of files from this directory
 
 Directory containing files (ex. /Music2)
 Track title
 Artist
 Album
-file name
+file path
+cover art path
 
 ...

@@ -1,11 +1,19 @@
 Path to folder containing files (ex. /Music)
+Track title
+Artist
+Album
+file name
 
 Track title
 Artist
 Album
+file name
+---       < denotes end of files from this directory
 
+Directory containing files (ex. /Music2)
 Track title
 Artist
 Album
+file name
 
 ...

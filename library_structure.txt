@@ -1,0 +1,11 @@
+Path to folder containing files (ex. /Music)
+
+Track title
+Artist
+Album
+
+Track title
+Artist
+Album
+
+...

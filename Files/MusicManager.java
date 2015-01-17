@@ -49,14 +49,18 @@ public class MusicManager {
             }
         }
         if (!alreadyAdded)
-            playlist.add(song);
+        playlist.add(song);
     }
     
+    //removing a song
     public void removeTrack(Song song) {
-        for (int i=0;i<playlist.size();i++){
+        for (int i=0;i<playlist.size(); ){
+            //special consideration required to make sure song is actually removed
             if (song.equals(playlist.get(i))){
+                //once removed, rest of array will shift left so don't increment i
                 playlist.remove(i);
             }
+            else i++;
         }
     }
     
@@ -77,4 +81,108 @@ public class MusicManager {
         }
     }
     
+    /// *** METHODS
+    
+    // Searches by Track Name
+    public Song[] searchByTitle(String name) {
+        // An List is used in case there is more than one track with the same name
+        List<Song> matches = new ArrayList<Song>();
+        
+        for (int i = 0; i < playlist.size(); i++) {
+            if (playlist.get(i).getTitle().equals(name)) {
+                matches.add(playlist.get(i));
+            }
+        }
+        
+        return matches.toArray(new Song[matches.size()]);
+    }
+    
+    // Searches by Artist
+    public Song[] searchByArtist(String artist) {
+        // An ArrayList is used in case there is more than one track with the same name
+        List<Song> matches = new ArrayList<Song>();
+        
+        for (int i = 0; i < playlist.size(); i++) {
+            if (playlist.get(i).getArtist().equals(artist)) {
+                matches.add(playlist.get(i));
+            }
+        }
+        return matches.toArray(new Song[matches.size()]);
+    }
+    
+    // Returns a Song array sorted by song title
+    public Song[] sortByTitle() {
+        Song[] sortedSongs = playlist.toArray(new Song[playlist.size()]);
+        
+        // Bubble sort
+        boolean sorted = false;
+        while(!sorted) {
+            sorted = true;
+            for (int i = 0; i < sortedSongs.length - 1; i++) {
+                if (sortedSongs[i].getTitle().compareTo(sortedSongs[i+1].getTitle()) > 0) {
+                    // switch
+                    Song temp = sortedSongs[i];
+                    sortedSongs[i] = sortedSongs[i + 1];
+                    sortedSongs[i + 1] = temp;
+                    sorted = false;
+                }
+            }
+        }
+        return sortedSongs;
+    }
+    
+    // Returns a Song array sorted by song artist
+    public Song[] sortByArtist() {
+        Song[] sortedSongs = playlist.toArray(new Song[playlist.size()]);
+        
+        // Bubble sort
+        boolean sorted = false;
+        while(!sorted) {
+            sorted = true;
+            for (int i = 0; i < sortedSongs.length - 1; i++) {
+                if (sortedSongs[i].getArtist().compareTo(sortedSongs[i+1].getArtist()) > 0) {
+                    // switch
+                    Song temp = sortedSongs[i];
+                    sortedSongs[i] = sortedSongs[i + 1];
+                    sortedSongs[i + 1] = temp;
+                    sorted = false;
+                }
+            }
+        }
+        return sortedSongs;
+    }
+    
+    // Returns a Song array sorted by song Album
+    public Song[] sortByAlbum() {
+        Song[] sortedSongs = playlist.toArray(new Song[playlist.size()]);
+        
+        // Bubble sort
+        boolean sorted = false;
+        while(!sorted) {
+            sorted = true;
+            for (int i = 0; i < sortedSongs.length - 1; i++) {
+                if (sortedSongs[i].getAlbum().compareTo(sortedSongs[i+1].getAlbum()) > 0) {
+                    // switch
+                    Song temp = sortedSongs[i];
+                    sortedSongs[i] = sortedSongs[i + 1];
+                    sortedSongs[i + 1] = temp;
+                    sorted = false;
+                }
+            }
+        }
+        return sortedSongs;
+    }
+    
+    // Clears the library
+    public void clearList() {
+        playlist.clear();
+    }
+    
+    // Exports the current library to the specified file
+    public void exportLibrary(String filename) {
+    }
+    
+    // Imports a library from the specified txt file
+    public void importLibrary(String filename) {
+    }
 }

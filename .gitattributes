@@ -1,0 +1,5 @@
+# Declare files that will always have CRLF line endings on checkout.
+*.java text eol=crlf
+*.md text eol=crlf
+*.txt text eol=crlf
+*.log text eol=crlf

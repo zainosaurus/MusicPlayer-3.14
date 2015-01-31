@@ -3,68 +3,73 @@ import java.io.*;
 
 public class MusicManager {
     private List<Song> playlist;
-    private String playFileLoc;
+//     private Player player;
+	 private int currentSongIndex;
+
+	 /**
+	  * Constructor
+	  */
     public MusicManager() {
         playlist = new ArrayList<Song>();
+//          player = new Player(this);
     }
-    
-    public MusicManager(String txt){
-        playlist = new ArrayList<Song>();
-        playFileLoc = txt;
-        load(txt);
-    }
-    
+
+
     //Accessors
-    public List<Song> getPlaylist() {
-        return playlist;
+    public Song[] getPlaylist() {
+        return playlist.toArray(new Song[playlist.size()]);
     }
-    
-    //manager loading a playlist
+
+    /**
+     * Loading the playlist to use from a txt
+     */
     public void load(String txt) {
         BufferedReader br;
         try {
             br = new BufferedReader(new FileReader(txt));
-            int numSongs = Integer.parseInt(br.readLine().trim());
-            for (int i=0;i<numSongs;i++){
-                String songName = br.readLine().trim();
-                if (!playlist.contains(songName)){
-                    playlist.add(new Song(songName));
-                }
+            // required vars
+            String title, artist, album, filePath, cover;
+
+            // looping till the songname is null (end of file)
+            while ((title = br.readLine()) != null) {
+            	// init song specs
+            	artist = br.readLine();
+            	album = br.readLine();
+            	filePath = br.readLine();
+            	cover = br.readLine();
+
+            	// add song
+            	addTrack(new Song(title, artist, album, filePath, cover));
+            	currentSongIndex = 0;
+				// blank line
+            	br.readLine();
             }
         }
         catch (IOException e){
-            System.out.println("Error loading some file. X: Not all of playlist loaded");
+            new NotificationWindow("Fatal Error", "Error loading some file. X: Not all of playlist loaded");
         }
         catch (NumberFormatException e){
-            System.out.println("File is not properly formatted. Check relative humidity.");
+            new NotificationWindow("Fatal Error", "File is not properly formatted. Check relative humidity.");
         }
     }
-    
-    //adding a song
+
+    /**
+     * Adding a song
+     */
     public void addTrack(Song song) {
-        boolean alreadyAdded = false;
-        for (int i=0;i<playlist.size()&&!alreadyAdded;i++){
-            if (song.equals(playlist.get(i))){
-                alreadyAdded = true;
-            }
-        }
-        if (!alreadyAdded)
-        playlist.add(song);
+	    playlist.add(song);
     }
-    
-    //removing a song
+
+    /**
+     * removing a song
+     */
     public void removeTrack(Song song) {
-        for (int i=0;i<playlist.size(); ){
-            //special consideration required to make sure song is actually removed
-            if (song.equals(playlist.get(i))){
-                //once removed, rest of array will shift left so don't increment i
-                playlist.remove(i);
-            }
-            else i++;
-        }
+		playlist.remove(song);
     }
-    
-    //assuming that playlist is saved in a textfile
+
+    /**
+     * Saving playlist
+     */
     public void save() {
         BufferedWriter bw;
         try {
@@ -80,28 +85,30 @@ public class MusicManager {
             System.out.println("Error: Playlist was not saved. Sorry.");
         }
     }
-    
-    /// *** METHODS
-    
-    // Searches by Track Name
+
+    /**
+     * Searches by track name
+     */
     public Song[] searchByTitle(String name) {
         // An List is used in case there is more than one track with the same name
         List<Song> matches = new ArrayList<Song>();
-        
+
         for (int i = 0; i < playlist.size(); i++) {
             if (playlist.get(i).getTitle().equals(name)) {
                 matches.add(playlist.get(i));
             }
         }
-        
+
         return matches.toArray(new Song[matches.size()]);
     }
-    
-    // Searches by Artist
+
+    /**
+     * Searches by artist
+     */
     public Song[] searchByArtist(String artist) {
         // An ArrayList is used in case there is more than one track with the same name
         List<Song> matches = new ArrayList<Song>();
-        
+
         for (int i = 0; i < playlist.size(); i++) {
             if (playlist.get(i).getArtist().equals(artist)) {
                 matches.add(playlist.get(i));
@@ -109,11 +116,13 @@ public class MusicManager {
         }
         return matches.toArray(new Song[matches.size()]);
     }
-    
-    // Returns a Song array sorted by song title
+
+    /**
+     * Returns a song array sorted by song title
+     */
     public Song[] sortByTitle() {
         Song[] sortedSongs = playlist.toArray(new Song[playlist.size()]);
-        
+
         // Bubble sort
         boolean sorted = false;
         while(!sorted) {
@@ -130,11 +139,13 @@ public class MusicManager {
         }
         return sortedSongs;
     }
-    
-    // Returns a Song array sorted by song artist
+
+    /**
+     * Returns a Song array sorted by song artist
+     */
     public Song[] sortByArtist() {
         Song[] sortedSongs = playlist.toArray(new Song[playlist.size()]);
-        
+
         // Bubble sort
         boolean sorted = false;
         while(!sorted) {
@@ -151,11 +162,13 @@ public class MusicManager {
         }
         return sortedSongs;
     }
-    
-    // Returns a Song array sorted by song Album
+
+    /**
+     * Returns a Song array sorted by song Album
+     */
     public Song[] sortByAlbum() {
         Song[] sortedSongs = playlist.toArray(new Song[playlist.size()]);
-        
+
         // Bubble sort
         boolean sorted = false;
         while(!sorted) {
@@ -172,17 +185,23 @@ public class MusicManager {
         }
         return sortedSongs;
     }
-    
-    // Clears the library
+
+    /**
+     * Clears the library
+     */
     public void clearList() {
         playlist.clear();
     }
-    
-    // Exports the current library to the specified file
+
+    /**
+     * Exports the current library to the specified file
+     */
     public void exportLibrary(String filename) {
     }
-    
-    // Imports a library from the specified txt file
+
+    /**
+     * Imports a library from the specified txt file
+     */
     public void importLibrary(String filename) {
     }
 }

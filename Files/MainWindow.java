@@ -1,10 +1,12 @@
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.*;
 
 public class MainWindow extends JFrame implements ActionListener {
     private Player player;
     private MusicManager manager;
+    private ArrayList<Song> playlist;
 
     // variables for search bar panel
     private JPanel searchPanel;
@@ -41,7 +43,7 @@ public class MainWindow extends JFrame implements ActionListener {
     public MainWindow(String title, MusicManager man){
         super(title);
         manager = man;
-		updateSongNames(manager.getPlaylist());
+		  updateSongs(manager.getPlaylist());
 
         // search area
         drawSearchArea();
@@ -55,8 +57,8 @@ public class MainWindow extends JFrame implements ActionListener {
         // song action area
         drawSongActionArea();
 
-		// frame specs
-		setLayout(new FlowLayout());
+		  // frame specs
+		  setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(450, 300);
         setResizable(true);
@@ -191,14 +193,15 @@ public class MainWindow extends JFrame implements ActionListener {
 //     }
 
 	/**
-	 * Updates the list of song names
+	 * Updates the playlist and list of song names
 	 */
-    public void updateSongNames(Song[] list) {
+    public void updateSongs(ArrayList<Song> list) {
+      playlist = list;
     	try {
-    		songNames = new String[list.length];
+    		songNames = new String[list.size()];
 
-	    	for (int i = 0; i < list.length; i++) {
-    	  		songNames[i] = list[i].getTitle();
+	    	for (int i = 0; i < list.size(); i++) {
+    	  		songNames[i] = list.get(i).getTitle();
     		}
 
     		songs.setListData(songNames);
@@ -211,9 +214,14 @@ public class MainWindow extends JFrame implements ActionListener {
 
 
     /**
-     * Updates the list of song names (with only one song)
+     * Updates the list of song names and playlist (with only one song)
      */
-   	public void updateSongNames(Song song) {
+   	public void updateSongs(Song song) {
+   	   // playlist
+   	   playlist = new ArrayList<>();
+   	   playlist.add(song);
+
+   	   // song names
    		songNames = new String[1];
    		songNames[0] = song.getTitle();
 
@@ -222,21 +230,23 @@ public class MainWindow extends JFrame implements ActionListener {
 
 
     /**
-    * Action Performed method
-    */
+     * Action Performed method
+     */
     public void actionPerformed(ActionEvent evt) {
         String command = evt.getActionCommand();
 
         // Search
         if (command.equals("search")) {
             if (searchOptionSelector.getSelectedIndex() == 0) {
-        	}
+               // search and update the list with the results.
+               // if the search field is blank, reset the list with all songs by updating songs from MusicManager
+        	   }
         }
 
         // Load
         else if (command.equals("load")) {
             manager.load("songlist.txt");
-            updateSongNames(manager.getPlaylist());
+            updateSongs(manager.getPlaylist());
         }
         // Save
         else if (command.equals("save")) {
@@ -248,13 +258,13 @@ public class MainWindow extends JFrame implements ActionListener {
             if (playAll.isSelected()) {
                 // shuffle?
                 if (shuffle.isSelected()) {
-                    player.shuffle(manager.getPlaylist());
+                    player.shuffle(playlist.toArray(new Song[playlist.size()]));
                 } else {
-                    player.play(manager.getPlaylist());
+                    player.play(playlist.toArray(new Song[playlist.size()]));
                     //System.out.println(manager.getPlaylist()[0]);
                 }
             } else if (songs.getSelectedIndex() != -1) {
-                player.play(manager.getPlaylist()[songs.getSelectedIndex()]);
+                player.play(playlist.get(songs.getSelectedIndex()));
             } else {
                 new NotificationWindow("Dumbass Alert", "Listen here, you little shit, did you just try to play a song without selecting it? I'm not a fucking mind-reader. Select a song before playing it please.");
             }

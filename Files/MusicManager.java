@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 
 public class MusicManager {
-    private List<Song> playlist;
+    private ArrayList<Song> playlist;
 //     private Player player;
 	 private int currentSongIndex;
 
@@ -16,8 +16,8 @@ public class MusicManager {
 
 
     //Accessors
-    public Song[] getPlaylist() {
-        return playlist.toArray(new Song[playlist.size()]);
+    public ArrayList<Song> getPlaylist() {
+        return playlist;
     }
 
     /**
@@ -91,7 +91,7 @@ public class MusicManager {
      */
     public Song[] searchByTitle(String name) {
         // An List is used in case there is more than one track with the same name
-        List<Song> matches = new ArrayList<Song>();
+        ArrayList<Song> matches = new ArrayList<Song>();
 
         for (int i = 0; i < playlist.size(); i++) {
             if (playlist.get(i).getTitle().equals(name)) {
@@ -107,7 +107,7 @@ public class MusicManager {
      */
     public Song[] searchByArtist(String artist) {
         // An ArrayList is used in case there is more than one track with the same name
-        List<Song> matches = new ArrayList<Song>();
+        ArrayList<Song> matches = new ArrayList<Song>();
 
         for (int i = 0; i < playlist.size(); i++) {
             if (playlist.get(i).getArtist().equals(artist)) {

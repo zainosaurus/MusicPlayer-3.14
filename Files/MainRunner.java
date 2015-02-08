@@ -1,6 +1,7 @@
 /*
  * The main entry point of the application.
  */
+import javax.swing.*;
 
 public class MainRunner {
     public static void main(String[] args) {

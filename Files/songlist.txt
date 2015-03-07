@@ -7,5 +7,5 @@ default.jpg
 Sandstorm
 Darude
 MLG Cancer Music
-Darude-Sandstorm.wav
+Songname.wav
 default.jpg

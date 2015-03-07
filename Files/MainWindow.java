@@ -43,6 +43,7 @@ public class MainWindow extends JFrame implements ActionListener {
     public MainWindow(String title, MusicManager man){
         super(title);
         manager = man;
+        player = new Player(manager);
 		  updateSongs(manager.getPlaylist());
 
         // search area
@@ -261,7 +262,8 @@ public class MainWindow extends JFrame implements ActionListener {
                     player.shuffle(playlist.toArray(new Song[playlist.size()]));
                 } else {
                     player.play(playlist.toArray(new Song[playlist.size()]));
-                    //System.out.println(manager.getPlaylist()[0]);
+                    //System.out.println(playlist.get(0));
+                    //System.out.println(playlist.get(1));
                 }
             } else if (songs.getSelectedIndex() != -1) {
                 player.play(playlist.get(songs.getSelectedIndex()));

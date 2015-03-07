@@ -1,3 +1,8 @@
+/**
+ * MusicManager Class
+ * Manages the playlist and perform front-end actions for the user
+ */
+
 import java.util.*;
 import java.io.*;
 
@@ -11,7 +16,7 @@ public class MusicManager {
 	  */
     public MusicManager() {
         playlist = new ArrayList<Song>();
-//          player = new Player(this);
+        // player = new Player(this);
     }
 
 

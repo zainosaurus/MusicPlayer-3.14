@@ -17,8 +17,10 @@ public class Player {
     private int randomSong;
     private boolean[] played;
     // a thread which plays all the songs in the playlist
-    private Thread playThread;
-    private boolean threadFinished = true;
+    private Thread playThread, resumeThread;
+    private boolean finishedPlaying = true;
+    
+    private MainWindow parent; //just for some features
     
     /**
     * Constructor
@@ -29,11 +31,16 @@ public class Player {
         initializePlayThread();
     }
     
+    public Player(MainWindow parent){
+        this();
+        this.parent = parent;
+    }
+    
     // initilizes the thread (this is ugly)
     private void initializePlayThread(){
         playThread = new Thread(){
             public void run(){
-                threadFinished = false;
+                finishedPlaying = false;
                 try {
                     //play each song in playlist
                     for (Song s : playlist) {
@@ -41,27 +48,40 @@ public class Player {
                         AudioInputStream as = AudioSystem.getAudioInputStream(in);
                         clip = AudioSystem.getClip();
                         clip.open(as);
-                        clip.start();
-                        try{
-                            do {
-                                Thread.sleep(500);
-                            } while (clip.isRunning());
-                        }
-                        catch (InterruptedException e){
-                            throw new InterruptedException();
-                        }
+                        initializeResumeThread();
+                        resumeThread.start();
                     }
                 }
                 //these cases occur when stop or play are (re)requested anyway
-                catch (NullPointerException|InterruptedException npe){
+                catch (NullPointerException npe){
                 }
                 catch (Exception iox) {
                     new NotificationWindow("Fatal Error", "Error playing file.");
                     iox.printStackTrace();
                 }
-                finally{
-                    threadFinished = true;
-                    return;
+            }
+        };
+    }
+    
+    private void initializeResumeThread(){
+        resumeThread = new Thread(){
+            public void run() {
+                try{
+                    clip.start();
+                    do {
+                        Thread.sleep(500);
+                        
+                        //if finished, force break out after setting UI button's text
+                        if (clip.getMicrosecondPosition() >= clip.getMicrosecondLength())
+                        {
+                            finishedPlaying = true;
+                            parent.setPlayPauseText(parent.PLAY_TEXT);
+                            break;
+                        }
+                    } while (clip.isRunning());
+                }
+                catch (InterruptedException|NullPointerException e){
+                    //e.printStackTrace();
                 }
             }
         };
@@ -88,24 +108,13 @@ public class Player {
     * This is where the class performs its sworn duty and runs(). aka plays the playlist
     */
     public void run() {
-        if (!threadFinished) {
-            stop();
+        if (clip!=null && !finishedPlaying){
+            initializeResumeThread();
+            resumeThread.start();
         }
-        
-        initializePlayThread();
-        playThread.start();
-    }
-    
-    
-    /**
-    * Resumes playback after being paused
-    */
-    public void continuePlaying() {
-        try {
-            clip.start();
-        }
-        catch(NullPointerException ex) {
-            // call play method for the song
+        else{
+            initializePlayThread();
+            playThread.start();
         }
     }
     
@@ -125,6 +134,7 @@ public class Player {
     */
     public void stop(){
         try {
+            resumeThread.interrupt();
             playThread.interrupt();
             clip.stop();
             reset();

@@ -37,14 +37,14 @@ public class MainWindow extends JFrame implements ActionListener {
     private JButton pause;
     private JButton info;
 
-	/**
-	 * Constructor
-	 */
+    /**
+     * Constructor
+     */
     public MainWindow(String title, MusicManager man){
         super(title);
         manager = man;
-        player = new Player(manager);
-		  updateSongs(manager.getPlaylist());
+        player = new Player();
+        updateSongs(manager.getPlaylist());
 
         // search area
         drawSearchArea();
@@ -58,8 +58,8 @@ public class MainWindow extends JFrame implements ActionListener {
         // song action area
         drawSongActionArea();
 
-		  // frame specs
-		  setLayout(new FlowLayout());
+        // frame specs
+        setLayout(new FlowLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(450, 300);
         setResizable(true);
@@ -76,8 +76,8 @@ public class MainWindow extends JFrame implements ActionListener {
         play = new JButton("Play");
         stop = new JButton("Stop");
         pause = new JButton("Pause");
-        shuffle = new JCheckBox("Shuffle");
         info = new JButton("Song Info");
+        shuffle = new JCheckBox("Shuffle");
         playAll = new JCheckBox("Play All");
 
         // spec
@@ -88,7 +88,9 @@ public class MainWindow extends JFrame implements ActionListener {
         stop.setActionCommand("stop");
         pause.setActionCommand("pause");
         info.setActionCommand("info");
-
+        shuffle.setActionCommand("toggleShuffle");
+        playAll.setActionCommand("togglePlayMode");
+        
         // action listeners
         play.addActionListener(this);
         stop.addActionListener(this);
@@ -134,82 +136,71 @@ public class MainWindow extends JFrame implements ActionListener {
         setJMenuBar(menuBar);
     }
 
-	/**
-	 * Search area
-	 */
+    /**
+     * Search area
+     */
     public void drawSearchArea() {
-		// initialize
-		searchPanel = new JPanel(new FlowLayout());
-		searchBox = new JTextField(15);
-		searchOptionSelector = new JComboBox(searchOptions);
-		searchButton = new JButton("Search");
+        // initialize
+        searchPanel = new JPanel(new FlowLayout());
+        searchBox = new JTextField(15);
+        searchOptionSelector = new JComboBox<String>(searchOptions);
+        searchButton = new JButton("Search");
 
-		// spec
-		searchOptionSelector.setSelectedIndex(0);
+        // spec
+        searchOptionSelector.setSelectedIndex(0);
 
-		// action commands
-		searchBox.setActionCommand("search");
-		searchButton.setActionCommand("search");
+        // action commands
+        searchBox.setActionCommand("search");
+        searchButton.setActionCommand("search");
 
-		// action listeners
-		searchBox.addActionListener(this);
-		searchButton.addActionListener(this);
+        // action listeners
+        searchBox.addActionListener(this);
+        searchButton.addActionListener(this);
 
-		// adding elements
-		searchPanel.add(searchBox);
-		searchPanel.add(searchOptionSelector);
-		searchPanel.add(searchButton);
+        // adding elements
+        searchPanel.add(searchBox);
+        searchPanel.add(searchOptionSelector);
+        searchPanel.add(searchButton);
 
-		add(searchPanel);
+        add(searchPanel);
     }
 
-	/**
-	 * Song list
-	 */
-	public void drawSongList() {
-		// initialize
-		songListPanel = new JPanel(new FlowLayout());
-		songs = new JList<String>(songNames);
-		songList = new JScrollPane(songs);
+    /**
+     * Song list
+     */
+    public void drawSongList() {
+        // initialize
+        songListPanel = new JPanel(new FlowLayout());
+        songs = new JList<String>(songNames);
+        songList = new JScrollPane(songs);
 
-		// spec
-		songs.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // spec
+        songs.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		// Adding elements
-		songListPanel.add(songList);
+        // Adding elements
+        songListPanel.add(songList);
 
-		add(songListPanel);
+        add(songListPanel);
 
-	}
+    }
 
-// 	 private void loadPlayer(){
-//         player = new Player(new MusicManager());
-//
-//         //for debugging purposes
-//         player.getManager().addTrack(new Song("Kappa.wav"));
-//         player.getManager().addTrack(new Song("Song Name.wav"));
-//         player.play();
-//         player.getManager().removeTrack(new Song("Song Name.wav"));
-//         player.play();
-//     }
-
-	/**
-	 * Updates the playlist and list of song names
-	 */
+    /**
+     * Updates the playlist and list of song names
+     */
     public void updateSongs(ArrayList<Song> list) {
       playlist = list;
-    	try {
-    		songNames = new String[list.size()];
+        try {
+            songNames = new String[list.size()];
 
-	    	for (int i = 0; i < list.size(); i++) {
-    	  		songNames[i] = list.get(i).getTitle();
-    		}
+            for (int i = 0; i < list.size(); i++) {
+                songNames[i] = list.get(i).getTitle();
+            }
 
-    		songs.setListData(songNames);
-		}
-		catch(NullPointerException noArray) {
-			new NotificationWindow("Note", "You need to load a playlist before being able to play songs.");
-		}
+            songs.setListData(songNames);
+        }
+        catch(NullPointerException noArray) {
+            new NotificationWindow("Note", "You need to load a playlist before being able to play songs.");
+        }
 
     }
 
@@ -217,17 +208,17 @@ public class MainWindow extends JFrame implements ActionListener {
     /**
      * Updates the list of song names and playlist (with only one song)
      */
-   	public void updateSongs(Song song) {
-   	   // playlist
-   	   playlist = new ArrayList<>();
-   	   playlist.add(song);
+    public void updateSongs(Song song) {
+       // playlist
+       playlist = new ArrayList<Song>();
+       playlist.add(song);
 
-   	   // song names
-   		songNames = new String[1];
-   		songNames[0] = song.getTitle();
+       // song names
+        songNames = new String[1];
+        songNames[0] = song.getTitle();
 
-   		songs.setListData(songNames);
-   	}
+        songs.setListData(songNames);
+    }
 
 
     /**
@@ -239,9 +230,9 @@ public class MainWindow extends JFrame implements ActionListener {
         // Search
         if (command.equals("search")) {
             if (searchOptionSelector.getSelectedIndex() == 0) {
-               // search and update the list with the results.
-               // if the search field is blank, reset the list with all songs by updating songs from MusicManager
-        	   }
+                // search and update the list with the results.
+                // if the search field is blank, reset the list with all songs by updating songs from MusicManager
+            }
         }
 
         // Load
@@ -259,15 +250,15 @@ public class MainWindow extends JFrame implements ActionListener {
             if (playAll.isSelected()) {
                 // shuffle?
                 if (shuffle.isSelected()) {
-                    player.shuffle(playlist.toArray(new Song[playlist.size()]));
+                    //player.shuffle(playlist.toArray(/*new Song[playlist.size()]*/));
+                    //player.shuffle(playlist.toArray());
                 } else {
                     player.play(playlist.toArray(new Song[playlist.size()]));
-                    //System.out.println(playlist.get(0));
-                    //System.out.println(playlist.get(1));
                 }
             } else if (songs.getSelectedIndex() != -1) {
                 player.play(playlist.get(songs.getSelectedIndex()));
             } else {
+                //display a message that instantly makes the user feel bad and give up on life
                 new NotificationWindow("Dumbass Alert", "Listen here, you little shit, did you just try to play a song without selecting it? I'm not a fucking mind-reader. Select a song before playing it please.");
             }
         }
@@ -280,6 +271,11 @@ public class MainWindow extends JFrame implements ActionListener {
             player.pause();
         }
         // info
+        else if (command.equals("info")) {
+            Song curSong = playlist.get(songs.getSelectedIndex());
+            String infoString = String.format("Title: %s\nArtist: %s\nAlbum: %s\n", curSong.getTitle(), curSong.getArtist(), curSong.getAlbum());
+            new NotificationWindow("About "+curSong.getTitle(), infoString);
+        }
     }
 }
 

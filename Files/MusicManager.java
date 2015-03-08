@@ -9,14 +9,13 @@ import java.io.*;
 public class MusicManager {
     private ArrayList<Song> playlist;
 //     private Player player;
-	 private int currentSongIndex;
+    private int currentSongIndex;
 
-	 /**
-	  * Constructor
-	  */
+     /**
+      * Constructor
+      */
     public MusicManager() {
         playlist = new ArrayList<Song>();
-        // player = new Player(this);
     }
 
 
@@ -37,24 +36,24 @@ public class MusicManager {
 
             // looping till the songname is null (end of file)
             while ((title = br.readLine()) != null) {
-            	// init song specs
-            	artist = br.readLine();
-            	album = br.readLine();
-            	filePath = br.readLine();
-            	cover = br.readLine();
+                // init song specs
+                artist = br.readLine();
+                album = br.readLine();
+                filePath = br.readLine();
+                cover = br.readLine();
 
-            	// add song
-            	addTrack(new Song(title, artist, album, filePath, cover));
-            	currentSongIndex = 0;
-				// blank line
-            	br.readLine();
+                // add song
+                addTrack(new Song(title, artist, album, filePath, cover));
+                currentSongIndex = 0;
+                // blank line
+                br.readLine();
             }
         }
         catch (IOException e){
-            new NotificationWindow("Fatal Error", "Error loading some file. X: Not all of playlist loaded");
+            new NotificationWindow("Fatal Error", "Error loading a file. Not all of playlist loaded");
         }
         catch (NumberFormatException e){
-            new NotificationWindow("Fatal Error", "File is not properly formatted. Check relative humidity.");
+            new NotificationWindow("Fatal Error", "File is not properly formatted.");
         }
     }
 
@@ -62,14 +61,14 @@ public class MusicManager {
      * Adding a song
      */
     public void addTrack(Song song) {
-	    playlist.add(song);
+        playlist.add(song);
     }
 
     /**
      * removing a song
      */
     public void removeTrack(Song song) {
-		playlist.remove(song);
+        playlist.remove(song);
     }
 
     /**

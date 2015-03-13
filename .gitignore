@@ -26,3 +26,6 @@ Temporary Items
 # Java class and console files
 *.class
 *~
+
+# Ignore this for now
+*.list
